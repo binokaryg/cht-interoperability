@@ -12,7 +12,7 @@ import {
   chtPatientIdentifierType,
   chtDocumentIdentifierType
 } from '../mappers/cht';
-import { getPatientUUIDFromSourceId } from '../utils/cht';
+import { chtRecordsApi, getPatientUUIDFromSourceId, getFCHVListByHF } from '../utils/cht';
 
 export async function createPatient(chtPatientDoc: any) {
   // hack for sms forms: if source_id but not _id,
@@ -90,4 +90,11 @@ export async function createEncounter(chtReport: any) {
   }
 
   return { status: 200, data: {} };
+}
+
+export async function getFchvList(hf_id: string) {
+  //get all FCHVs under a Health Facility from CHT
+  const fchvs = await getFCHVListByHF(hf_id);
+  const response = { status: 200, data: fchvs };
+  return response;
 }

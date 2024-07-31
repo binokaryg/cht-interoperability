@@ -7,11 +7,11 @@ import { buildChtPatientFromFhir, buildChtRecordFromObservations } from '../mapp
 import { logger } from '../../logger';
 
 type CouchDBQuery = {
-    selector: Record<string, any>;
-    fields?: string[];
+  selector: Record<string, any>;
+  fields?: string[];
 };
 
-function getOptions(){
+function getOptions() {
   const options = {
     httpsAgent: new https.Agent({
       rejectUnauthorized: false,
@@ -77,7 +77,7 @@ async function getLocation(fhirPatient: fhir4.Patient) {
 
     // edge cases can result in more than one location, get first matching
     // if not found by name, no more we can do, give up
-    if (!location.data?.docs || location.data.docs.length == 0){
+    if (!location.data?.docs || location.data.docs.length == 0) {
       return '';
     } else {
       return location.data.docs[0].place_id;
@@ -91,11 +91,11 @@ export async function getPatientUUIDFromSourceId(source_id: string) {
       source_id: source_id,
       type: "person"
     },
-    fields: [ "_id" ]
+    fields: ["_id"]
   }
 
   const patient = await queryCht(query);
-  if ( patient.data.docs && patient.data.docs.length > 0 ){
+  if (patient.data.docs && patient.data.docs.length > 0) {
     return patient.data.docs[0]._id;
   } else {
     return ''
@@ -160,3 +160,44 @@ export const generateChtDBUrl = (chtUrl: string, username: string, password: str
   const endpoint = generateBasicAuthUrl(chtUrl, username, password);
   return path.join(endpoint, '/medic/');
 };
+
+export const generateChtViewUrl = (chtUrl: string, username: string, password: string, view: string) => {
+  const endpoint = generateBasicAuthUrl(chtUrl, username, password);
+  return path.join(endpoint, '/medic/_design/medic/_view/', view);
+};
+
+export async function queryChtView(view: string) {
+  const chtApiUrl = generateChtViewUrl(CHT.url, CHT.username, CHT.password, view);
+  try {
+    const res = await axios.get(chtApiUrl, getOptions());
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
+}
+
+export async function getFCHVListByHF(hf_id: any) {
+  const query: CouchDBQuery = {
+    selector: {
+      "contact_type": "g40_clinic",
+      "parent._id": hf_id
+    },
+    fields: ["_id"]
+  }
+
+  const clinics = await queryCht(query);
+  if (clinics.data.docs && clinics.data.docs.length > 0) {
+    const clinic_ids = clinics.data.docs.map((clinic: any) => clinic._id);
+    const fchv_query: CouchDBQuery = {
+      selector: {
+        "type": "person",
+        "parent._id": { "$in": clinic_ids }
+      },
+      fields: ["_id", "name"]
+    }
+    return queryCht(fchv_query);
+  } else {
+    return { status: 404, data: { message: "No clinics found for health facility" } };
+  }
+}
