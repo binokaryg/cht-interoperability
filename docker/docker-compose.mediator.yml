@@ -8,6 +8,7 @@ services:
     container_name: mediator
     ports:
       - "6000:6000"
+      - "9229:9229"
     environment:
       - "OPENHIM_USERNAME=${OPENHIM_USERNAME:-interop@openhim.org}"
       - "OPENHIM_PASSWORD=${OPENHIM_PASSWORD:-interop-password}"

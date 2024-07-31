@@ -12,7 +12,8 @@
     "coverage": "jest --coverage",
     "clean": "rm -rf ./dist",
     "unit-test": "jest src/",
-    "e2e-test": "test/e2e-test.sh"
+    "e2e-test": "test/e2e-test.sh",
+    "watch": "nodemon --watch '**/*.ts' --exec 'node --inspect=0.0.0.0:9229 -r ts-node/register ./index.ts'"
   },
   "repository": {
     "type": "git",
