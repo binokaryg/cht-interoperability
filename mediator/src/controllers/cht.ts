@@ -94,7 +94,6 @@ export async function createEncounter(chtReport: any) {
 
 export async function getFchvList(hf_id: string) {
   //get all FCHVs under a Health Facility from CHT
-  const fchvs = await getFCHVListByHF(hf_id);
-  const response = { status: 200, data: fchvs };
-  return response;
+  const response = await getFCHVListByHF(hf_id);
+    return response;
 }

@@ -163,7 +163,7 @@ export const generateChtDBUrl = (chtUrl: string, username: string, password: str
 
 export const generateChtViewUrl = (chtUrl: string, username: string, password: string, view: string) => {
   const endpoint = generateBasicAuthUrl(chtUrl, username, password);
-  return path.join(endpoint, '/medic/_design/medic/_view/', view);
+  return path.join(endpoint, '/medic/_design/interop/_view/', view);
 };
 
 export async function queryChtView(view: string) {
@@ -178,26 +178,11 @@ export async function queryChtView(view: string) {
 }
 
 export async function getFCHVListByHF(hf_id: any) {
-  const query: CouchDBQuery = {
-    selector: {
-      "contact_type": "g40_clinic",
-      "parent._id": hf_id
-    },
-    fields: ["_id"]
-  }
-
-  const clinics = await queryCht(query);
-  if (clinics.data.docs && clinics.data.docs.length > 0) {
-    const clinic_ids = clinics.data.docs.map((clinic: any) => clinic._id);
-    const fchv_query: CouchDBQuery = {
-      selector: {
-        "type": "person",
-        "parent._id": { "$in": clinic_ids }
-      },
-      fields: ["_id", "name"]
-    }
-    return queryCht(fchv_query);
+  const fchv_view = 'fchv_list';
+  const fchvs = await queryChtView(fchv_view);
+  if (fchvs && fchvs.data && fchvs.data.rows && fchvs.data.rows.length > 0) {
+    return { status: 200, data: fchvs.data.rows };
   } else {
-    return { status: 404, data: { message: "No clinics found for health facility" } };
+    return { status: 404, data: { message: "No FCHVs found for health facility" } };
   }
 }
