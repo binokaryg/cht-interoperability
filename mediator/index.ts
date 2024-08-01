@@ -43,16 +43,16 @@ if (process.env.NODE_ENV !== 'test') {
   registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
 
   // start patient and ecnounter sync in the background
-  // setInterval(async () => {
-  //   try {
-  //     const startTime = new Date();
-  //     startTime.setHours(startTime.getHours() - 1);
-  //     await syncPatients(startTime);
-  //     await syncEncounters(startTime);
-  //   } catch (error: any) {
-  //     logger.error(error);
-  //   }
-  // }, Number(SYNC_INTERVAL));
+  setInterval(async () => {
+    try {
+      const startTime = new Date();
+      startTime.setHours(startTime.getHours() - 1);
+      await syncPatients(startTime);
+      await syncEncounters(startTime);
+    } catch (error: any) {
+      logger.error(error);
+    }
+  }, Number(SYNC_INTERVAL));
 }
 
 export default app;
