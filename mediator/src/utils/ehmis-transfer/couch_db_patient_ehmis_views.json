@@ -1,0 +1,24 @@
+{
+  "_id": "_design/patient_ehmis_views",
+  "_rev": "17-9faafcf8c10403c04fc9b12bafdf4efd",
+  "views": {
+    "sms_pregnancy_registration": {
+      "map": "function(doc) { if (doc.type === 'data_record' && ['L', 'ल', 'A', 'अ'].indexOf(doc.form) !== -1 && doc.fields) { emit(doc.fields.patient_id, doc); } }"
+    },
+    "sms_anc_visits": {
+      "map": "function(doc) { if (doc.type === 'data_record' && ['G', 'ग'].indexOf(doc.form) !== -1 && doc.fields) { emit(doc.fields.patient_id, doc); } }"
+    },
+    "all_anc_visits": {
+      "map": "function(doc) { if (doc.type === 'data_record' && ['G', 'ग','pregnancy_visit'].indexOf(doc.form) !== -1 && doc.fields) { emit([doc.fields.patient_id, doc.fields.patient_uuid], doc); } }"
+    },
+    "all_pregnancy_registration": {
+      "map": "function(doc) { if (doc.type === 'data_record' && ['L', 'ल', 'A', 'अ', 'pregnancy'].indexOf(doc.form) !== -1 && doc.fields) { emit([doc.fields.patient_id, doc.fields.patient_uuid], doc); } }"
+    },
+    "all_patient_records": {
+      "map": "function(doc) { if (doc.type === 'data_record' && ['1', '१', 'ग', 'ज', 'प', 'ल', 'L', 'G', 'J', 'P', 'delivery', 'pnc_visit', 'pregnancy', 'pregnancy_visit'].indexOf(doc.form) !== -1 && doc.fields) { if (doc.fields.patient_id) { emit(doc.fields.patient_id, doc); } if (doc.fields.patient_uuid) { emit(doc.fields.patient_uuid, doc); } } }"
+    },
+    "patient_records_by_patient_id_or_uuid": {
+      "map": "function(doc) { if (doc.type === 'data_record' && ['1', '१', 'ग', 'ज', 'प', 'ल', 'L', 'G', 'J', 'P', 'delivery', 'pnc_visit', 'pregnancy', 'pregnancy_visit'].indexOf(doc.form) !== -1 && doc.fields) { if (doc.fields.patient_id) { emit(doc.fields.patient_id, doc); } if (doc.fields.patient_uuid) { emit(doc.fields.patient_uuid, doc); } } }"
+    }
+  }
+}

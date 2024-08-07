@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requestHandler } from '../utils/request';
 import { createPatient, updatePatientIds, createEncounter, getFchvList } from '../controllers/cht'
-import { getFCHVListByHF } from '../utils/cht';
+import { getFCHVListByHF, getPendingPatientsProfileByFchvArea } from '../utils/cht';
 
 const router = Router();
 
@@ -20,6 +20,14 @@ router.post(
 router.post(
   '/encounter',
   requestHandler((req) => createEncounter(req.body))
+);
+
+router.get(
+  '/pending-patients-profile',
+  requestHandler(async (req) => {
+    const fchvAreaIds = req.body.fchvAreaIds;
+    return getPendingPatientsProfileByFchvArea(fchvAreaIds);
+  })
 );
 
 router.post(

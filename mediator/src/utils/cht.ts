@@ -5,6 +5,7 @@ import https from 'https';
 import path from 'path';
 import { buildChtPatientFromFhir, buildChtRecordFromObservations } from '../mappers/cht';
 import { logger } from '../../logger';
+import { getAllPatientProfilesByFCHV }  from './ehmis-transfer/ehmis-requests/get-patient-profile.js';
 
 type CouchDBQuery = {
   selector: Record<string, any>;
@@ -186,3 +187,22 @@ export async function getFCHVListByHF(hf_id: any) {
     return { status: 404, data: { message: "No FCHVs found for health facility" } };
   }
 }
+
+export async function getPendingPatientsProfileByFchvArea(fchvAreaIds: any) {
+  try {
+    const allPatientProfiles = [];
+
+    for (const fchvAreaId of fchvAreaIds) {
+      const patientProfiles = await getAllPatientProfilesByFCHV(fchvAreaId);
+      allPatientProfiles.push(...patientProfiles);
+    }
+    return { status: 200, data: allPatientProfiles}
+  } catch (error) {
+    return {
+      status: 500,
+      data: { message: "Error: " + (error as Error).message }
+    };
+  }
+}
+
+
