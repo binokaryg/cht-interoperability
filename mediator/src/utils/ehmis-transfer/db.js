@@ -1,7 +1,8 @@
 const nano = require('nano');
-const { credentials } = require('./appConstants.js');
+const { CHT } = require ('../../../dist/config/index.js');
 
-const server = `https://${credentials.devUser}:${credentials.devPassword}@bardiya-ne.dev.medicmobile.org`;
+const server = `https://${CHT.username}:${CHT.password}@${CHT.url}`;
+//const server = 'https://medic:snowdrop-weaker-oppositive-twites-dulverton@bardiya-ne.dev.medicmobile.org';
 const database = 'medic';
 
 const db = nano(server).use(database);

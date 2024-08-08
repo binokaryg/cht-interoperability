@@ -1,8 +1,3 @@
-const credentials = {
-    devUser: 'medic',
-    devPassword: '',
-};
-
 // ANC intervals definition
 const ANC_INTERVALS = [
     { start: 0, end: 84 },  // ANC 1: 12 Weeks (57 - 84 days)
@@ -15,6 +10,6 @@ const ANC_INTERVALS = [
     { start: 253, end: 280 } // ANC 8: 38 - 40 Weeks (259 - 280 days)
   ];
 
-module.exports = { credentials, ANC_INTERVALS};
+module.exports = { ANC_INTERVALS};
 
 
